@@ -34,34 +34,13 @@
     </dependencies>
     <build>
         <plugins>
-            <!--plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-shade-plugin</artifactId>
-              <version>3.2.0</version>
-              <executions>
-                <execution>
-                  <phase>package</phase>
-                  <goals>
-                    <goal>shade</goal>
-                  </goals>
-                  <configuration>
-                    <relocations>
-                      <relocation>
-                        <pattern>org.apache.hadoop</pattern>
-                        <shadedPattern>hd_3_2_2.org.apache.hadoop</shadedPattern>
-                      </relocation>
-                    </relocations>
-                  </configuration>
-                </execution>
-              </executions>
-            </plugin-->
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>3.1.0</version>
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>GrayClientMain</mainClass>
+                            <mainClass>GrayHDFSClientMain</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
