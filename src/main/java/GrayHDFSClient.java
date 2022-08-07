@@ -5,11 +5,13 @@ import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.LocalFileSystem;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.hdfs.DFSClient;
+import org.apache.hadoop.hdfs.DFSInputStream;
 import org.apache.hadoop.hdfs.DistributedFileSystem;
 import java.io.IOException;
 
     public final class GrayHDFSClient implements AutoCloseable {
-        private final FileSystem fs;
+        private final DFSClient c;
 
         private static final byte[] BLOCK;
         static {
@@ -30,17 +32,16 @@ import java.io.IOException;
             System.setProperty("HADOOP_USER_NAME", "gray");
             System.setProperty("hadoop.home.dir", "/");
             // get the filesystem - HDFS
-            fs = FileSystem.get(conf);
+            c = new DFSClient(conf);
         }
 
         public void readFile(final String filePath) throws IOException {
-            final Path path = new Path(filePath);
-            if (!fs.exists(path)) {
+            if (!c.exists(filePath)) {
                 throw new IOException("file not exists");
             }
             final byte[] bytes = new byte[16];
             int numBytes = 0;
-            final FSDataInputStream in = fs.open(path);
+            final DFSInputStream in = c.open(filePath);
             while ((numBytes = in.read(bytes)) > 0) {
                 // do nothing
             }
@@ -48,8 +49,7 @@ import java.io.IOException;
         }
 
         public void writeFile(final String filePath, final int len) throws IOException {
-            final Path path = new Path(filePath);
-            final FSDataOutputStream out = fs.create(path, true);
+            final FSDataOutputStream out = (FSDataOutputStream) c.create(filePath, true);
             for (int i = 0; i < len; i += BLOCK.length) {
                 out.write(BLOCK, 0, Math.min(len - i, BLOCK.length));
             }
@@ -58,7 +58,7 @@ import java.io.IOException;
 
         @Override
         public void close() throws IOException {
-            fs.close();
+            c.close();
         }
     }
 
