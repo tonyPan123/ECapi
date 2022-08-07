@@ -47,18 +47,6 @@ public class GrayHDFSClientMain {
     }
 
     public static void main(final String[] args) throws IOException {
-        //run(args);
-        final String confDir = args[0];
-        final Configuration conf = new Configuration();
-        conf.addResource(new Path(confDir + "/core-site.xml"));
-        conf.addResource(new Path(confDir + "/hdfs-site.xml"));
-        // because of Maven
-        conf.set("fs.hdfs.impl", DistributedFileSystem.class.getName());
-        conf.set("fs.file.impl", LocalFileSystem.class.getName());
-        // set HADOOP user
-        System.setProperty("HADOOP_USER_NAME", "gray");
-        System.setProperty("hadoop.home.dir", "/");
-
-        DFSClient c = new DFSClient(conf);
+        run(args);
     }
 }
