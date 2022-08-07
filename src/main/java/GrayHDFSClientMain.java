@@ -1,12 +1,7 @@
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.EnumSet;
 
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.LocalFileSystem;
-import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.hdfs.DFSClient;
-import org.apache.hadoop.hdfs.DistributedFileSystem;
+import org.apache.hadoop.hdfs.protocol.LocatedBlocks;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,7 +41,24 @@ public class GrayHDFSClientMain {
         }
     }
 
+    public static void reproduction(final String [] args) {
+        final String confDir = args[0];
+        final String filename = args[1];
+        try (final GrayHDFSClient client = new GrayHDFSClient(confDir)) {
+            client.writeFile(filename, 3_000_000);
+            Thread.sleep(10000);
+            LOG.info("Corruption Target is " + client.triggerReconstruction(filename));
+        } catch (Exception e) {
+            LOG.warn("Client(or sleep) encounter exception", e);
+        }
+
+
+
+
+    }
+
     public static void main(final String[] args) throws IOException {
-        run(args);
+        //run(args);
+        reproduction(args);
     }
 }

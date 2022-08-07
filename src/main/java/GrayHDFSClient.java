@@ -1,16 +1,14 @@
 
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.FSDataInputStream;
-import org.apache.hadoop.fs.FSDataOutputStream;
-import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.LocalFileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hdfs.DFSClient;
 import org.apache.hadoop.hdfs.DFSInputStream;
 import org.apache.hadoop.hdfs.DFSOutputStream;
 import org.apache.hadoop.hdfs.DistributedFileSystem;
-import org.apache.hadoop.hdfs.protocol.DatanodeInfo;
-import org.apache.hadoop.hdfs.protocol.LocatedBlock;
+import org.apache.hadoop.hdfs.protocol.LocatedBlocks;
+import org.apache.hadoop.hdfs.protocol.LocatedStripedBlock;
+
 
 import java.io.IOException;
 
@@ -59,6 +57,15 @@ import java.io.IOException;
             }
             out.close();
         }
+
+        public int triggerReconstruction(final String filePath) throws IOException {
+            final LocatedBlocks locatedBlocks =
+                    c.getLocatedBlocks(filePath, 0);
+            final LocatedStripedBlock lastBlock =
+                    (LocatedStripedBlock)locatedBlocks.getLastLocatedBlock();
+            return lastBlock.getLocations()[0].getIpcPort();
+        }
+
 
         @Override
         public void close() throws IOException {
