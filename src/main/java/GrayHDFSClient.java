@@ -7,7 +7,11 @@ import org.apache.hadoop.fs.LocalFileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hdfs.DFSClient;
 import org.apache.hadoop.hdfs.DFSInputStream;
+import org.apache.hadoop.hdfs.DFSOutputStream;
 import org.apache.hadoop.hdfs.DistributedFileSystem;
+import org.apache.hadoop.hdfs.protocol.DatanodeInfo;
+import org.apache.hadoop.hdfs.protocol.LocatedBlock;
+
 import java.io.IOException;
 
     public final class GrayHDFSClient implements AutoCloseable {
@@ -49,7 +53,7 @@ import java.io.IOException;
         }
 
         public void writeFile(final String filePath, final int len) throws IOException {
-            final FSDataOutputStream out = (FSDataOutputStream) c.create(filePath, true);
+            final DFSOutputStream out = (DFSOutputStream) c.create(filePath, true);
             for (int i = 0; i < len; i += BLOCK.length) {
                 out.write(BLOCK, 0, Math.min(len - i, BLOCK.length));
             }
