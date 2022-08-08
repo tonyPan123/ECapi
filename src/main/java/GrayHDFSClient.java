@@ -58,7 +58,7 @@ import java.io.IOException;
             out.close();
         }
 
-        public int triggerReconstruction(final String filePath) throws IOException {
+        public int getLastBlockDatanode(final String filePath) throws IOException {
             final LocatedBlocks locatedBlocks =
                     c.getLocatedBlocks(filePath, 0);
             final LocatedStripedBlock lastBlock =

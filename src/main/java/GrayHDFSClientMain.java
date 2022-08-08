@@ -47,7 +47,7 @@ public class GrayHDFSClientMain {
         try (final GrayHDFSClient client = new GrayHDFSClient(confDir)) {
             client.writeFile(filename, 3_000_000);
             Thread.sleep(10000);
-            LOG.info("Corruption Target is " + client.triggerReconstruction(filename));
+            LOG.info("Corruption Target is " + client.getLastBlockDatanode(filename));
         } catch (Exception e) {
             LOG.warn("Client(or sleep) encounter exception", e);
         }
@@ -58,7 +58,11 @@ public class GrayHDFSClientMain {
     }
 
     public static void main(final String[] args) throws IOException {
-        //run(args);
-        reproduction(args);
+        final String cmd = args[1];
+        if (cmd.equals("reproduce")) {
+            reproduction(args);
+        } else {
+            run(args);
+        }
     }
 }
