@@ -62,8 +62,8 @@ public final class GrayHDFSClient implements AutoCloseable {
 
         public void configureNode() throws IOException {
             c.setSafeMode(SAFEMODE_LEAVE);
-            c.setErasureCodingPolicy("/","XOR-2-1-1024k");
             c.enableErasureCodingPolicy("XOR-2-1-1024k");
+            c.setErasureCodingPolicy("/","XOR-2-1-1024k");
         }
 
         public int getLastBlockDatanode(final String filePath) throws IOException {
