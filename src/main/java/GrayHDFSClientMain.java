@@ -45,16 +45,13 @@ public class GrayHDFSClientMain {
         final String confDir = args[0];
         final String filename = args[2];
         try (final GrayHDFSClient client = new GrayHDFSClient(confDir)) {
+            client.configureNode();
             client.writeFile(filename, 3_000_000);
             Thread.sleep(5000);
             LOG.info("Corruption Target is " + client.getLastBlockDatanode(filename));
         } catch (Exception e) {
             LOG.warn("Client(or sleep) encounter exception", e);
         }
-
-
-
-
     }
 
     public static void main(final String[] args) throws IOException {

@@ -12,7 +12,9 @@ import org.apache.hadoop.hdfs.protocol.LocatedStripedBlock;
 
 import java.io.IOException;
 
-    public final class GrayHDFSClient implements AutoCloseable {
+import static org.apache.hadoop.hdfs.protocol.HdfsConstants.SafeModeAction.SAFEMODE_LEAVE;
+
+public final class GrayHDFSClient implements AutoCloseable {
         private final DFSClient c;
 
         private static final byte[] BLOCK;
@@ -56,6 +58,12 @@ import java.io.IOException;
                 out.write(BLOCK, 0, Math.min(len - i, BLOCK.length));
             }
             out.close();
+        }
+
+        public void configureNode() throws IOException {
+            c.setSafeMode(SAFEMODE_LEAVE);
+            c.setErasureCodingPolicy("/","XOR-2-1-1024k");
+            c.enableErasureCodingPolicy("XOR-2-1-1024k");
         }
 
         public int getLastBlockDatanode(final String filePath) throws IOException {
